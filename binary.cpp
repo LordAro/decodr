@@ -216,8 +216,6 @@ std::string Binary::prog_headers()
 	return out;
 }
 
-#include <cstring>
-
 std::string section_name(const std::vector<uint8_t> &string_names, size_t n)
 {
 	// ick.
@@ -250,6 +248,7 @@ std::string Binary::section_headers()
 		if (name == ".comment") {
 			this->reader.seek(header->sh_offset);
 			auto content = this->reader.read_blob(header->sh_size);
+			for (auto &i : content) if (i == '\0') i = ' ';
 			const char *p = reinterpret_cast<const char *>(content.data());
 			out += "  Content:    \"" + std::string(p) + "\"\n";
 		}
